@@ -10,7 +10,7 @@
 -author("xtovarn").
 
 %% API
--export([ets/2, list/2]).
+-export([ets/2, list/2, new_test/0]).
 
 ets_prepare(N) ->
 	Tab = ets:new(undefined, [ordered_set]),
@@ -55,3 +55,7 @@ list(N, Limit) ->
 	L = list_prepare(N),
 	{Time, Value} = timer:tc(fun() -> list_read_all(L, Limit) end),
 	{Value, Time}.
+
+new_test() ->
+	{ok, Pid} = ets_proxy:start_link(),
+	timer:tc(fun() -> [gen_server:call(Pid, {insert, [{X*I, create_binary(X*I)} || X <- lists:seq(1,10)]}, 100) || I <- lists:seq(1, 50000)] end).
