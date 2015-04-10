@@ -19,7 +19,7 @@ ets_prepare(N) ->
 
 create_binary(I) ->
 	B = integer_to_binary(I),
-	A = <<"Ahoy">>,
+	A = <<"Ahoy1A6F51E0670: to=<araxxxx@gmail.com>, orig_to=<256254@mail.muni.cz>, relay=gmail-smtp-in.l.google.com[173.194.65.26]:25, delay=0.73, delays=0.19/0/0.1/0.45, dsn=2.0.0, status=sent (250 2.0.0 OK 1412051116 pv8si19198664wjc.98 - gsmtp)">>,
 	<<A/binary, B/binary>>.
 
 ets_read_all(Tab, Limit) ->
