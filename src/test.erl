@@ -49,7 +49,7 @@ split2(List, _Limit) ->
 list_read_all_2({[], Result}, _Limit, Res) ->
 	[lists:reverse(Result) | Res];
 list_read_all_2({Continuation, Result}, Limit, TotalResult) ->
-	list_read_all_2(split2(Continuation, Limit), Limit, [lists:(Result) | TotalResult]).
+	list_read_all_2(split2(Continuation, Limit), Limit, [lists:reverse(Result) | TotalResult]).
 
 list(N, Limit) ->
 	L = list_prepare(N),
