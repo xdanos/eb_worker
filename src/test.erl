@@ -57,5 +57,10 @@ list(N, Limit) ->
 	{Value, Time}.
 
 new_test() ->
-	{ok, Pid} = ets_proxy:start_link(),
-	timer:tc(fun() -> [gen_server:call(Pid, {insert, [{X*I, create_binary(X*I)} || X <- lists:seq(1,10)]}, 100) || I <- lists:seq(1, 50000)] end).
+	{ok, Pid} = ets_proxy:start_link(name1),
+	{ok, Pid2} = ets_proxy:start_link(name2),
+	{ok, Pid3} = ets_proxy:start_link(name3),
+
+	Array = array:from_list([Pid, Pid2, Pid3]),
+
+	timer:tc(fun() -> [gen_server:call(array:get(I rem 3, Array), {insert, {I, create_binary(I)}}) || I <- lists:seq(1, 250000)] end).

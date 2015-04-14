@@ -3,7 +3,7 @@
 
 -behaviour(gen_server).
 
--export([start_link/0]).
+-export([start_link/1]).
 
 -export([init/1,
 	handle_call/3,
@@ -16,8 +16,8 @@
 
 -record(state, {tab, requests = 0}).
 
-start_link() ->
-	gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+start_link(N) ->
+	gen_server:start_link({local, N}, ?MODULE, [], []).
 
 init([]) ->
 	{ok, #state{tab = ets:new(undefined, [ordered_set])}}.
@@ -27,7 +27,7 @@ handle_call({insert, Data}, _From, State = #state{requests = N}) ->
 	{reply, ok, State#state{requests = N + 1}}.
 
 handle_cast({insert, Data}, State = #state{requests = N}) ->
-	ets:insert(State#state.tab, {N, Data}),
+	ets:insert(State#state.tab, Data),
 	{noreply, State#state{requests = N + 1}}.
 
 handle_info(_Info, State) ->
