@@ -63,4 +63,5 @@ new_test() ->
 
 	Array = array:from_list([Pid, Pid2, Pid3]),
 
-	timer:tc(fun() -> [gen_server:call(array:get(I rem 3, Array), {insert, {I, create_binary(I)}}) || I <- lists:seq(1, 250000)] end).
+	{Time, Value} = timer:tc(fun() -> [gen_server:call(array:get(I rem 3, Array), {insert, {I, create_binary(I)}}) || I <- lists:seq(1, 250000)] end),
+	{Time / 1000000, Value}.
