@@ -12,8 +12,6 @@
 %% API
 -export([rh1/2, test_perf/0, rh2/2]).
 
--define(MIN_INT, -576460752303423489).
-
 rh1(Key, Nodes) ->
 	Fun = fun(Node, {MaxNode, MaxValue}) ->
 		Hash = erlang:phash2({Key, Node}),
@@ -22,7 +20,7 @@ rh1(Key, Nodes) ->
 			false -> {MaxNode, MaxValue}
 		end
 	end,
-	{Result, _} = lists:foldl(Fun, {undefined, ?MIN_INT}, Nodes),
+	{Result, _} = lists:foldl(Fun, {undefined, -1}, Nodes),
 	Result.
 
 rh2(Key, Nodes) ->
@@ -33,7 +31,7 @@ rh2(Key, Nodes) ->
 			false -> {MaxNode, MaxValue}
 		end
 	end,
-	{Result, _} = ec_plists:fold(Fun, {undefined, ?MIN_INT}, Nodes, 8),
+	{Result, _} = ec_plists:fold(Fun, {undefined, -1}, Nodes, 8),
 	Result.
 
 
