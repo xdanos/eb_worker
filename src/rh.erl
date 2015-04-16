@@ -38,7 +38,7 @@ rh2(Key, Nodes) ->
 
 
 test_perf() ->
-	Nodes = [a, b, c, d, e, f, g, h, k, i, j, k, l],
+	Nodes = [a, b, c, d, e, f, g, h, k, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z],
 	F =
 		fun() ->
 			[rh:rh1({key, key, 1, I}, Nodes) || I <- lists:seq(1, 100000)]
