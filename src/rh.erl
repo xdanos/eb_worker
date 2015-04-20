@@ -10,9 +10,10 @@
 -author("xtovarn").
 
 %% API
--export([rh1/2, test_perf/0, rh2/2]).
+-export([rh1/3, test_perf/0, rh2/3]).
 
-rh1(Key, Nodes) ->
+rh1(Key, Nodes, N) ->
+	lists:sort(Nodes),
 	Fun = fun(Node, {MaxNode, MaxValue}) ->
 		Hash = erlang:phash2({Key, Node}),
 		case Hash > MaxValue of
@@ -23,23 +24,15 @@ rh1(Key, Nodes) ->
 	{Result, _} = lists:foldl(Fun, {undefined, -1}, Nodes),
 	Result.
 
-rh2(Key, Nodes) ->
-	Fun = fun(Node, {MaxNode, MaxValue}) ->
-		Hash = erlang:phash2({Key, Node}),
-		case Hash > MaxValue of
-			true -> {Node, Hash};
-			false -> {MaxNode, MaxValue}
-		end
-	end,
-	{Result, _} = ec_plists:fold(Fun, {undefined, -1}, Nodes, 8),
-	Result.
-
+rh2(Key, Nodes, N) ->
+	L = lists:map(fun(Node) -> {erlang:phash2({Key, Node}), Node} end, Nodes),
+	lists:sublist(lists:reverse(lists:sort(L)), N).
 
 test_perf() ->
-	Nodes = [a, b, c, d, e, f, g, h, k, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z],
+	Nodes = [wpOVXYm7@localhost, bhcEl1lA@localhost, ho867Kea@localhost, uLVveyEU@localhost, hxKaLQJt@localhost, czcygmSN@localhost, nQiDurbv@localhost, wa7HNV78@localhost, zBQV3nK7@localhost, igmpo7HK@localhost, lwSDik8N@localhost, kCUL08B1@localhost, oTUzmJKK@localhost, le2nXy0s@localhost, hUlYX2zH@localhost, iwBcOLou@localhost, wMvkso2i@localhost, gEsDFsrr@localhost, aPsJI4Gx@localhost],
 	F =
 		fun() ->
-			[rh:rh1({key, key, 1, I}, Nodes) || I <- lists:seq(1, 200000)]
+			[rh:rh2({balancer, I}, Nodes, 1) || I <- lists:seq(1, 150000)]
 		end,
 	{Time, Value} = timer:tc(F),
 	{Time / 1000000, Value}.
