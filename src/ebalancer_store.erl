@@ -4,7 +4,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/0]).
+-export([start_link/0, remove_balancer/3, store/4, add_balancer/3]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -16,7 +16,16 @@
 
 -define(SERVER, ?MODULE).
 
--record(state, {store :: tid()}).
+-record(state, {}).
+
+add_balancer(ServerRef, BalancerName, Timeout) ->
+	gen_server:call(ServerRef, {add_balancer, BalancerName}, Timeout).
+
+remove_balancer(ServerRef, BalancerName, Timeout) ->
+	gen_server:call(ServerRef, {remove_balancer, BalancerName}, Timeout).
+
+store(ServerRef, BalancerName, RawData, Timeout) ->
+	gen_server:call(ServerRef, {store, BalancerName, RawData}, Timeout).
 
 %%%===================================================================
 %%% API
@@ -26,10 +35,16 @@ start_link() ->
 	gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
 init([]) ->
-	{ok, #state{store = ets:new(undefined, [ordered_set])}}.
+	{ok, #state{}}.
 
-handle_call({store, RawData}, _From, #state{store = Tab} = State) ->
-	ets:insert(Tab, RawData),
+handle_call({add_balancer, BalancerName}, _From, State) ->
+	ets:new(BalancerName, [ordered_set, named_table]),
+	{reply, ok, State};
+handle_call({remove_balancer, BalancerName}, _From, State) ->
+	ets:delete(BalancerName),
+	{reply, ok, State};
+handle_call({store, BalancerName, RawData}, _From, State) ->
+	ets:insert(BalancerName, RawData),
 	{reply, ok, State}.
 
 handle_cast(_Request, State) ->
