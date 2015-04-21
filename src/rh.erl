@@ -32,7 +32,7 @@ test_perf() ->
 	Nodes = [wpOVXYm7@localhost, bhcEl1lA@localhost, ho867Kea@localhost, uLVveyEU@localhost, hxKaLQJt@localhost, czcygmSN@localhost, nQiDurbv@localhost, wa7HNV78@localhost, zBQV3nK7@localhost, igmpo7HK@localhost, lwSDik8N@localhost, kCUL08B1@localhost, oTUzmJKK@localhost, le2nXy0s@localhost, hUlYX2zH@localhost, iwBcOLou@localhost, wMvkso2i@localhost, gEsDFsrr@localhost, aPsJI4Gx@localhost],
 	F =
 		fun() ->
-			[rh:rh2({balancer, I}, Nodes, 1) || I <- lists:seq(1, 150000)]
+			[rh:rh2({balancer1, {1, I}}, Nodes, 1) || I <- lists:seq(1, 150000)]
 		end,
 	{Time, Value} = timer:tc(F),
 	{Time / 1000000, Value}.
