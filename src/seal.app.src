@@ -1,0 +1,18 @@
+%%%-------------------------------------------------------------------
+%%% @author danos
+%%% @copyright (C) 2014, <COMPANY>
+%%% @doc
+%%%
+%%% @end
+%%% Created : 27. IV 2014 17:58
+%%%-------------------------------------------------------------------
+{application, eb_worker, [
+  {description, "Simple Event ALgebra engine"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+    kernel,
+    stdlib
+  ]},
+  {env, []}
+]}.
