@@ -10,7 +10,7 @@
 -author("xtovarn").
 
 %% API
--export([ets/2, list/2, send/1, binary_join/2]).
+-export([ets/2, list/2, binary_join/2, send/3]).
 
 ets_prepare(N) ->
 	Tab = ets:new(undefined, [ordered_set]),
