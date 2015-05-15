@@ -59,7 +59,7 @@ list(N, Limit) ->
 send(Node, BSize, N) ->
 	Binary = binary_join([create_binary(I) || I <- lists:seq(1, BSize)], <<"">>),
 	MByteSize = byte_size(Binary) / 1024 / 1024,
-	io:format("Msg Size: ~p MB~n", [MByteSize]),
+	io:format("Msg size MB: ~p ~n", [MByteSize]),
 	{Time, _} = timer:tc(
 		fun() ->
 			[gen_server:call({ets_proxy, Node}, {insert, {I, Binary}}) || I <- lists:seq(1, N)]
