@@ -56,9 +56,9 @@ list(N, Limit) ->
 	{Time, Value} = timer:tc(fun() -> list_read_all(L, Limit) end),
 	{Value, Time}.
 
-send(Nodes) ->
+send(Node) ->
 	{Time, Value} = timer:tc(
 		fun() ->
-			[rpc:sbcast(Nodes, ets_proxy, {insert, {I, create_binary(I)}}) || I <- lists:seq(1, 10000)]
+			[gen_server:call({ets_proxy, Node}, {insert, {I, create_binary(I)}}) || I <- lists:seq(1, 10000)]
 		end),
 	{Time / 1000000, Value}.
