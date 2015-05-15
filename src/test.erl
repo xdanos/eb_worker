@@ -66,7 +66,8 @@ send(Node, BSize, N) ->
 		end),
 	TSecs = Time / 1000000,
 	io:format("Msg per sec: ~p~n", [N / TSecs]),
-	io:format("MBps: ~p~n", [MByteSize * N / TSecs]).
+	io:format("MBps: ~p~n", [MByteSize * N / TSecs]),
+	io:format("Buffered mps: ~p~n", [BSize * N / TSecs]).
 
 -spec binary_join([binary()], binary()) -> binary().
 binary_join([], _Sep) ->
