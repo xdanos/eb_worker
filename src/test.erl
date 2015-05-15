@@ -10,7 +10,7 @@
 -author("xtovarn").
 
 %% API
--export([ets/2, list/2, send/1]).
+-export([ets/2, list/2, send/1, binary_join/2]).
 
 ets_prepare(N) ->
 	Tab = ets:new(undefined, [ordered_set]),
@@ -56,9 +56,27 @@ list(N, Limit) ->
 	{Time, Value} = timer:tc(fun() -> list_read_all(L, Limit) end),
 	{Value, Time}.
 
-send(Node) ->
-	{Time, Value} = timer:tc(
+send(Node, BSize, N) ->
+	Binary = binary_join([create_binary(I) || I <- lists:seq(1, BSize)], <<"">>),
+	MByteSize = byte_size(Binary) / 1024 / 1024,
+	io:format("Msg Size: ~p MB~n", [MByteSize]),
+	{Time, _} = timer:tc(
 		fun() ->
-			[gen_server:call({ets_proxy, Node}, {insert, {I, create_binary(I)}}) || I <- lists:seq(1, 10000)]
+			[gen_server:call({ets_proxy, Node}, {insert, {I, Binary}}) || I <- lists:seq(1, N)]
 		end),
-	{Time / 1000000, Value}.
+	TSecs = Time / 1000000,
+	io:format("Msg per sec: ~p~n", [N / TSecs]),
+	io:format("MBps: ~p~n", [MByteSize / TSecs]).
+
+-spec binary_join([binary()], binary()) -> binary().
+binary_join([], _Sep) ->
+	<<>>;
+binary_join([Part], _Sep) ->
+	Part;
+binary_join(List, Sep) ->
+	lists:foldr(fun (A, B) ->
+		if
+			bit_size(B) > 0 -> <<A/binary, Sep/binary, B/binary>>;
+			true -> A
+		end
+	end, <<>>, List).
